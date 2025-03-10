@@ -14,25 +14,28 @@ export default function TaskList() {
     return(
         <View style={styles.container}>
             <ImageBackground source={todayImage} style={styles.background}>
+
+                <View style={styles.iconBar}>
+                    <TouchableOpacity onPress={() => console.log('oi')}>
+                        <Icon name="eye" size={20} color={'#fff'}/>
+                    </TouchableOpacity>
+                </View>
+
                 <View style={styles.titleBar}>
                     <Text style={styles.title}>Hoje</Text>
                     <Text style={styles.subtitle}>{today}</Text>
-                </View>
-                <TouchableOpacity style={styles.addButton}
-                    activeOpacity={0.7}
-                    onPress={() => console.warn("+")}>
-
-                    <Icon name="plus" size={20} color={'#fff'}
-                    
-                    />
-
-                </TouchableOpacity>
-            
+                </View>            
 
             </ImageBackground>
             <View style={styles.taskList}>
                 <Text>Task #01</Text>
             </View>
+
+            <TouchableOpacity style={styles.addButton}
+                activeOpacity={0.7}
+                onPress={() => console.warn("+")}>
+                <Icon name="plus" size={20} color={'#fff'}/>
+            </TouchableOpacity>
 
         </View>
     )
@@ -46,7 +49,6 @@ const styles = StyleSheet.create({
     },
     taskList: {
         flex: 7,
-        backgroundColor: '#ff5d57'
     },
     titleBar:{
         flex:1,
@@ -63,5 +65,22 @@ const styles = StyleSheet.create({
         fontSize: 20,
         marginLeft: 20,
         marginBottom: 30,
+    },
+    addButton:{
+        position: 'absolute',
+        right: 30,
+        bottom:30,
+        width:50,
+        height:50,
+        borderRadius:25,
+        backgroundColor: '#B13B44',
+        justifyContent: 'center',
+        alignItems:'center'
+    },
+    iconBar:{
+        flexDirection:'row',
+        marginHorizontal:20,
+        justifyContent:'flex-end',
+        marginTop:20,
     }
 })
