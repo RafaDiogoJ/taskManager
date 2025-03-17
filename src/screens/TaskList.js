@@ -1,4 +1,4 @@
-import { View, Text, ImageBackground, StyleSheet, TouchableOpacity } from "react-native";
+import { FlatList, View, Text, ImageBackground, StyleSheet, TouchableOpacity } from "react-native";
 
 import moment from 'moment-timezone'
 import 'moment/locale/pt-br'
@@ -11,6 +11,33 @@ import Task from "../Components/Task";
 export default function TaskList() {
 
     const today = moment().tz("America/Sao_Paulo").locale("pt-br").format('ddd, D [de] MMMM')
+
+    const tasks =[
+        {
+            id: Math.random(),
+            desc: 'Elaborar o Mer do TCC',
+            estimateAt: new Date(),
+            doneAt: new Date()
+        },
+        {
+            id: Math.random(),
+            desc: 'Ajustar o FIGMA',
+            estimateAt: new Date(),
+            doneAt: null
+        },
+        {
+            id: Math.random(),
+            desc: 'Revisar a documentação do projeto',
+            estimateAt: new Date(),
+            doneAt: new Date()
+        },
+        {
+            id: Math.random(),
+            desc: 'Organizar o Trello',
+            estimateAt: new Date(),
+            doneAt: null
+        },
+    ]
 
     return(
         <View style={styles.container}>
@@ -29,7 +56,11 @@ export default function TaskList() {
 
             </ImageBackground>
             <View style={styles.taskList}>
-                <Task/>
+                <FlatList
+                    data={tasks}
+                    keyExtractor={item => `${item.id}`}
+                    renderItem={({item}) => <Task{...item} />}           
+                />
             </View>
 
             <TouchableOpacity style={styles.addButton}
