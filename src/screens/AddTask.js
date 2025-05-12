@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { View, Modal, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
+import { View, Modal, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, Platform } from "react-native";
 import  DateTimePicker  from "@react-native-community/datetimepicker";
 import moment from "moment"
 
@@ -10,6 +10,7 @@ export default function AddTask(props){
     const [showDatePicker, setShowDatePicker] = useState(false)
 
     const handleDateChange = (event, selectedDate) => {
+        setShowDatePicker(Platform.OS === 'ios')
         if (selectedDate){
             setDate(selectedDate)
         }
@@ -34,7 +35,7 @@ export default function AddTask(props){
                         onChange={setDesc}
                         value={desc}
                 />
-
+            {Platform.OS === 'android' && (
                 <View>
                     <TouchableOpacity onPress={() => setShowDatePicker(true)}>
                         <Text style={styles.date}>{formattedData}</Text>
@@ -48,6 +49,7 @@ export default function AddTask(props){
                         />
                     )}
                 </View>
+                )}
 
                 <View style={styles.buttons}>
                     <TouchableOpacity onPress={props.onCancel}>
@@ -99,5 +101,10 @@ const styles = StyleSheet.create({
         margin: 20,
         marginRight: 30,
         color: '#b13b44'
-    }
+    },
+    date: {
+        margin: 20,
+        marginRight: 30,
+        color: '#b13b44'
+    },
 })
