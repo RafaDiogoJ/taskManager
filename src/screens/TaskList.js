@@ -86,7 +86,7 @@ export default function TaskList() {
 
         const tempTasks = [...tasks]
         tempTasks.push({
-            is: Math.random(),
+            id: Math.random(),
             desc: newTask.desc,
             estimateAt: newTask.date,
             doneAt: null
