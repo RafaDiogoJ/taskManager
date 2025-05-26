@@ -10,7 +10,7 @@ import Task from "../Components/Task";
 import { useEffect, useState } from "react";
 import AddTask from "./AddTask";
 
-const taskDB =[
+const taskDB = [
     {
         id: Math.random(),
         desc: 'Elaborar o Mer do TCC',
@@ -41,20 +41,20 @@ export default function TaskList() {
 
     const today = moment().tz("America/Sao_Paulo").locale("pt-br").format('ddd, D [de] MMMM')
 
-    const[tasks, setTasks] = useState([...taskDB])
+    const [tasks, setTasks] = useState([...taskDB])
 
     const [visibleTasks, setVisibleTasks] = useState([...tasks])
-    const[showDoneTasks, setShowDoneTasks] = useState(true)
+    const [showDoneTasks, setShowDoneTasks] = useState(true)
     const [showAddTask, setShowAddTask] = useState(false)
 
     useEffect(() => {
         filterTasks()
     }, [showDoneTasks, tasks])
-    
+
     const toggleTask = (taskId) => {
         const taskList = [...visibleTasks]
         taskList.forEach(task => {
-            if (task.id === taskId){
+            if (task.id === taskId) {
                 task.doneAt = task.doneAt ? null : new Date()
             }
         })
@@ -69,7 +69,7 @@ export default function TaskList() {
 
     const filterTasks = () => {
         let visibleTasks = null
-        if(showDoneTasks) {
+        if (showDoneTasks) {
             visibleTasks = [...tasks]
         } else {
             const pending = task => task.doneAt === null
@@ -79,7 +79,7 @@ export default function TaskList() {
     }
 
     const addTask = newTask => {
-        if(!newTask.desc || !newTask.desc.trim()){
+        if (!newTask.desc || !newTask.desc.trim()) {
             Alert.alert('Dados Inválidos', 'Descrição não informada!')
             return
         }
@@ -93,41 +93,46 @@ export default function TaskList() {
         })
         setTasks(tempTasks)
         setShowAddTask(false)
-    } 
+    }
 
-    return(
+    const deleteTask = id => {
+        const tempTasks = tasks.filter(task => task.id !== id)
+        setTasks(tempTasks)
+    }
+
+    return (
         <View style={styles.container}>
 
-            <AddTask isVisible={showAddTask} 
+            <AddTask isVisible={showAddTask}
                 onCancel={() => setShowAddTask(false)}
-                onSave ={addTask}
+                onSave={addTask}
             />
             <ImageBackground source={todayImage} style={styles.background}>
 
                 <View style={styles.iconBar}>
                     <TouchableOpacity onPress={toggleFilter}>
-                        <Icon name={showDoneTasks ? "eye" : "eye-slash"} size={20} color={'#fff'}/>
+                        <Icon name={showDoneTasks ? "eye" : "eye-slash"} size={20} color={'#fff'} />
                     </TouchableOpacity>
                 </View>
 
                 <View style={styles.titleBar}>
                     <Text style={styles.title}>Hoje</Text>
                     <Text style={styles.subtitle}>{today}</Text>
-                </View>            
+                </View>
 
             </ImageBackground>
             <View style={styles.taskList}>
                 <FlatList
                     data={visibleTasks}
                     keyExtractor={item => `${item.id}`}
-                    renderItem={({item}) => <Task {...item} onToggleTask={toggleTask} />}
+                    renderItem={({ item }) => <Task {...item} onToggleTask={toggleTask} onDelete={deleteTask} />}
                 />
             </View>
 
             <TouchableOpacity style={styles.addButton}
                 activeOpacity={0.7}
                 onPress={() => setShowAddTask(true)}>
-                <Icon name="plus" size={20} color={'#fff'}/>
+                <Icon name="plus" size={20} color={'#fff'} />
             </TouchableOpacity>
 
         </View>
@@ -143,37 +148,37 @@ const styles = StyleSheet.create({
     taskList: {
         flex: 7,
     },
-    titleBar:{
-        flex:1,
+    titleBar: {
+        flex: 1,
         justifyContent: 'flex-end'
     },
-    title:{
+    title: {
         color: 'white',
         fontSize: 50,
         marginLeft: 20,
         marginBottom: 20,
     },
-    subtitle:{
+    subtitle: {
         color: 'white',
         fontSize: 20,
         marginLeft: 20,
         marginBottom: 30,
     },
-    addButton:{
+    addButton: {
         position: 'absolute',
         right: 30,
-        bottom:30,
-        width:50,
-        height:50,
-        borderRadius:25,
+        bottom: 30,
+        width: 50,
+        height: 50,
+        borderRadius: 25,
         backgroundColor: '#B13B44',
         justifyContent: 'center',
-        alignItems:'center'
+        alignItems: 'center'
     },
-    iconBar:{
-        flexDirection:'row',
-        marginHorizontal:20,
-        justifyContent:'flex-end',
-        marginTop:20,
+    iconBar: {
+        flexDirection: 'row',
+        marginHorizontal: 20,
+        justifyContent: 'flex-end',
+        marginTop: 20,
     }
 })

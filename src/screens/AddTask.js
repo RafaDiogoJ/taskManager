@@ -59,7 +59,7 @@ export default function AddTask(props) {
                         props.onSave({ desc, date })
                         setDesc("")
                         setDate(new Date())
-                        }
+                    }
                     }>
                         <Text style={styles.button}>Salvar</Text>
                     </TouchableOpacity>
