@@ -9,6 +9,7 @@ import todayImage from '../../assets/imgs/today.jpg'
 import Task from "../Components/Task";
 import { useEffect, useState } from "react";
 import AddTask from "./AddTask";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const taskDB = [
     {
@@ -41,15 +42,31 @@ export default function TaskList() {
 
     const today = moment().tz("America/Sao_Paulo").locale("pt-br").format('ddd, D [de] MMMM')
 
-    const [tasks, setTasks] = useState([...taskDB])
+    const [tasks, setTasks] = useState([])
 
     const [visibleTasks, setVisibleTasks] = useState([...tasks])
     const [showDoneTasks, setShowDoneTasks] = useState(true)
     const [showAddTask, setShowAddTask] = useState(false)
 
+    const [contador, setContador] = useState(0)
+
     useEffect(() => {
+        if (contador ==0) {
+            getTask()
+        }
+        setContador(contador + 1)
         filterTasks()
-    }, [showDoneTasks, tasks])
+    }, [showDoneTasks])
+
+    useEffect(() => {
+        filterTasks
+    }, [tasks])
+
+    async function getTask() {
+        const tasksString = await AsyncStorage.getItem('tasksState')
+        const tasks = tasksString && JSON.parse(tasksString) || taskDB
+        setTasks(tasks)
+    }
 
     const toggleTask = (taskId) => {
         const taskList = [...visibleTasks]
@@ -93,11 +110,16 @@ export default function TaskList() {
         })
         setTasks(tempTasks)
         setShowAddTask(false)
+
+        AsyncStorage.setItem('tasksState', JSON.stringify(tempTasks))
+
     }
 
     const deleteTask = id => {
         const tempTasks = tasks.filter(task => task.id !== id)
         setTasks(tempTasks)
+
+        AsyncStorage.setItem('tasksState', JSON.stringify(tempTasks))
     }
 
     return (
