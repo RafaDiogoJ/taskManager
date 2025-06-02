@@ -10,7 +10,6 @@ import Task from "../Components/Task";
 import { useEffect, useState } from "react";
 import AddTask from "./AddTask";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
 
 const taskDB = [
     {
@@ -39,7 +38,7 @@ const taskDB = [
     },
 ]
 
-export default function TaskList() {
+export default function TaskListLocal() {
 
     const today = moment().tz("America/Sao_Paulo").locale("pt-br").format('ddd, D [de] MMMM')
 
@@ -53,7 +52,7 @@ export default function TaskList() {
 
     useEffect(() => {
         if (contador ==0) {
-            getTasks()
+            getTask()
         }
         setContador(contador + 1)
         filterTasks()
@@ -63,14 +62,10 @@ export default function TaskList() {
         filterTasks
     }, [tasks])
 
-    async function getTasks() {
-        try {
-            const response = await axios.get('https://683e28c31cd60dca33da9796.mockapi.io/tasks')
-            setTasks(response.data)
-
-        } catch (erro) {
-            console.error('Arro ao carregar os dados', error)
-        }
+    async function getTask() {
+        const tasksString = await AsyncStorage.getItem('tasksState')
+        const tasks = tasksString && JSON.parse(tasksString) || taskDB
+        setTasks(tasks)
     }
 
     const toggleTask = (taskId) => {
