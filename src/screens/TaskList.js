@@ -73,15 +73,27 @@ export default function TaskList() {
         }
     }
 
-    const toggleTask = (taskId) => {
+    const toggleTask = async (taskId) => {
         const taskList = [...visibleTasks]
-        taskList.forEach(task => {
-            if (task.id === taskId) {
+
+        let taskUpdate = null
+        for (let i=0; i <taskList.length; i++) {
+            const task = taskList[i];
+            if(task.id === taskId){
                 task.doneAt = task.doneAt ? null : new Date()
+                taskUpdate = task
+                break
             }
-        })
+        }
 
         setVisibleTasks([...taskList])
+
+        try {
+            const response = await axios.put(`https://683e28c31cd60dca33da9796.mockapi.io/tasks/${taskUpdate.id}`, taskUpdate)
+        } catch (error) {
+            console.error('Erro ao atualizar tarefa', error)
+        }
+
         filterTasks()
     }
 
@@ -100,31 +112,52 @@ export default function TaskList() {
         setVisibleTasks(visibleTasks)
     }
 
-    const addTask = newTask => {
+    const addTask = async newTask => {
         if (!newTask.desc || !newTask.desc.trim()) {
             Alert.alert('Dados Inválidos', 'Descrição não informada!')
             return
         }
 
         const tempTasks = [...tasks]
-        tempTasks.push({
-            id: Math.random(),
+
+        const taskAdd = {
+            id: getLastTaskId(),
             desc: newTask.desc,
             estimateAt: newTask.date,
             doneAt: null
-        })
+        }
+
+        tempTasks.push(taskAdd)
+
         setTasks(tempTasks)
         setShowAddTask(false)
 
-        AsyncStorage.setItem('tasksState', JSON.stringify(tempTasks))
+        try {
+            const response = await axios.post('https://683e28c31cd60dca33da9796.mockapi.io/tasks', taskAdd)
+        } catch (error) {
+            console.error('Erro ao adicionar a tarefa', error)
+        }
+
+       // AsyncStorage.setItem('tasksState', JSON.stringify(tempTasks))
 
     }
 
-    const deleteTask = id => {
-        const tempTasks = tasks.filter(task => task.id !== id)
-        setTasks(tempTasks)
+    const deleteTask = async id => {
+        //const tempTasks = tasks.filter(task => task.id !== id)
+        //setTasks(tempTasks)
+        //AsyncStorage.setItem('tasksState', JSON.stringify(tempTasks))
 
-        AsyncStorage.setItem('tasksState', JSON.stringify(tempTasks))
+        try {
+            const response = await axios.delete(`https://683e28c31cd60dca33da9796.mockapi.io/tasks/${id}`)
+        } catch (error) {
+            console.error('Erro ao excluir tarefa', error)
+        }
+
+        getTasks()
+    }
+
+    function getLastTaskId(){
+        return Math.max(...tasks.map(task => task.id)) + 1
     }
 
     return (
